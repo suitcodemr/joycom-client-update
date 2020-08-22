@@ -1,59 +1,39 @@
-import React, { useContext } from 'react';
-import { LinkContainer } from 'react-router-bootstrap';
-import {
-	Container,
-	Row,
-	Col,
-	Button,
-	Jumbotron,
-	Spinner
-} from 'react-bootstrap';
-import { useQuery } from '@apollo/react-hooks';
+import React from 'react';
+import { Container, Spinner } from 'react-bootstrap';
+import { Divider, Typography } from '@material-ui/core';
 
-import { AuthContext } from '../context/auth';
+// Context
+import { useGlobalStateContext } from '../context/globalContext';
+
+import { useQuery } from '@apollo/react-hooks';
 import { FETCH_CATEGORIES_QUERY } from '../util/graphql';
 
-import CategoryCard from '../components/CategoryCard';
+import DateSlider from '../components/DateSlider/DateSlider';
+import CategorySlider from '../components/CategorySlider/CategorySlider';
+import EventList from '../components/EventList';
 
 const Home = () => {
-	const { user } = useContext(AuthContext);
-	const { loading, data } = useQuery(FETCH_CATEGORIES_QUERY);
+	const { selectedCategory } = useGlobalStateContext();
+
+	const { loading, data: dataFCQ } = useQuery(FETCH_CATEGORIES_QUERY);
 
 	return (
 		<>
 			<div className='home pageWrapper'>
-				{!user && (
-					<>
-						<Jumbotron className='jumbotron-home'>
-							<div className='h-100 d-flex align-items-center'>
-								<Container>
-									<Row>
-										<Col>
-											<h2 className='page-header'>Joycom</h2>
-											<p className='page-header-subtitle'>
-												Die neue Art miteinander zu kommunizieren und sich zu
-												verabreden.
-											</p>
-											<LinkContainer to='login'>
-												<Button variant='primary'>Einloggen</Button>
-											</LinkContainer>
-											<p className='d-inline-block ml-2 mr-2 text-uppercase'>
-												oder
-											</p>
-											<LinkContainer to='/register'>
-												<Button variant='info'>Jetzt registrieren!</Button>
-											</LinkContainer>
-										</Col>
-									</Row>
-								</Container>
-							</div>
-						</Jumbotron>
-					</>
-				)}
-
-				<Container>
-					<div className='categories content-warpper'>
-						<h2 className='page-header mt-5'>Kategorien</h2>
+				<>
+					<Container>
+						<Typography className='mt-3' variant='body1'>
+							Was steht in deiner Umgebung an...
+						</Typography>
+					</Container>
+					<DateSlider />
+					<Divider />
+					<Container>
+						<Typography className='mt-3 mb-1' variant='body1'>
+							Kategorien
+						</Typography>
+					</Container>
+					<div className='categories content-wrapper'>
 						{loading ? (
 							<>
 								<Spinner animation='border' role='status'>
@@ -61,17 +41,27 @@ const Home = () => {
 								</Spinner>
 							</>
 						) : (
-							<Row>
-								{data &&
-									data.getCategories.map(category => (
-										<Col key={category._id} xs={6} md={4} lg={3}>
-											<CategoryCard category={category} />
-										</Col>
-									))}
-							</Row>
+							<CategorySlider data={dataFCQ} />
 						)}
 					</div>
-				</Container>
+					<Divider />
+					<Container>
+						<Typography className='mt-3 mb-1' variant='body1'>
+							Events
+						</Typography>
+						{loading ? (
+							<>
+								<Spinner animation='border' role='status'>
+									<span className='sr-only'>Loading...</span>
+								</Spinner>
+							</>
+						) : (
+							selectedCategory._id !== undefined && (
+								<EventList categoryId={selectedCategory._id} />
+							)
+						)}
+					</Container>
+				</>
 			</div>
 		</>
 	);

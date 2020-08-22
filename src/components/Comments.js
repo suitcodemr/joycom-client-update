@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import gql from 'graphql-tag';
 import { useMutation } from '@apollo/react-hooks';
 
@@ -9,28 +9,41 @@ import { Button, Form, Card } from 'react-bootstrap';
 import DeleteButton from './DeleteButton';
 import { AuthContext } from '../context/auth';
 
-const Comments = ({ eventId, comments, category }) => {
+import { FETCH_CATEGORY_EVENTS_QUERY } from '../util/graphql';
+
+const Comments = ({ eventId, comments, category, categoryId }) => {
 	const { user } = useContext(AuthContext);
 	const [comment, setComment] = useState('');
 
-	const onChange = e => {
-		setComment(e.target.value);
-	};
-
-	const onSubmit = e => {
-		e.preventDefault();
-	};
-
 	const [createComment] = useMutation(CREATE_COMMENT_MUTATION, {
-		update() {
+		update(proxy, result) {
+			// const prevData = proxy.readQuery({
+			// 	query: FETCH_CATEGORY_EVENTS_QUERY,
+			// 	variables: { categoryId },
+			// });
+			// proxy.writeQuery({
+			// 	query: FETCH_CATEGORY_EVENTS_QUERY,
+			// 	variables: { categoryId },
+			// 	data: {
+			// 		getEventsCategory: [...prevData.getEventsCategory],
+			// 	},
+			// });
+
 			setComment('');
 		},
 		variables: {
 			eventId,
-			body: comment
-		}
+			body: comment,
+		},
 	});
 
+	const onChange = (e) => {
+		setComment(e.target.value);
+	};
+
+	const onSubmit = (e) => {
+		e.preventDefault();
+	};
 	return (
 		<>
 			{user && (
@@ -62,7 +75,7 @@ const Comments = ({ eventId, comments, category }) => {
 			)}
 
 			{comments &&
-				comments.map(comment => (
+				comments.map((comment) => (
 					<Card key={comment._id} className='comment'>
 						<Card.Body className='card-top'>
 							<div className='d-flex w-100'>

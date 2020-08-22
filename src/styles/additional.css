@@ -169,13 +169,19 @@ body {
   background: transparent;
   background-size: cover;
   height: 45vh;
+  margin-bottom: 0;
+  padding: 0rem 2rem;
 }
 .jumbotron-login {
-  background-image: url('https://images.unsplash.com/photo-1491438590914-bc09fcaaf77a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
-  height: 60vh;
+  display: flex;
+  justify-content: center;
+  background-image: url(https://images.unsplash.com/photo-1491438590914-bc09fcaaf77a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80);
+  align-items: center;
+  height: 100vh;
 }
 .jumbotron-home {
   background-image: url('https://images.unsplash.com/photo-1491438590914-bc09fcaaf77a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+  margin-bottom: 1rem;
 }
 .jumbotron-register {
   background-image: url('https://images.unsplash.com/photo-1491438590914-bc09fcaaf77a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
@@ -262,7 +268,6 @@ body {
 }
 .card.category {
   position: relative;
-  margin-bottom: 30px;
   cursor: pointer;
 }
 .card.category:hover .card-img-overlay {
@@ -365,12 +370,14 @@ body {
   }
 }
 .card.category .card-link.counter {
+  position: absolute;
   font-family: 'Montserrat', sans-serif;
   width: auto;
   text-align: right;
   padding: 3px 0px;
-  margin-right: -20px;
   margin-bottom: 0.6rem;
+  bottom: 0;
+  right: 0;
   padding-right: 20px;
   padding-left: 5px;
   border-top-left-radius: 8px;
@@ -735,4 +742,27 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+.slick-slider.dateSlider .slick-list {
+  overflow: unset;
+  transform: translate3d(31px, 0, 0);
+}
+.slick-slider.dateSlider .slick-list .slick-track .slick-slide:hover .MuiCard-root {
+  margin: 0 4px;
+}
+.slick-slider.dateSlider .slick-list .slick-track .slick-slide:hover .MuiCard-root.MuiPaper-outlined {
+  border: 1px solid red;
+}
+.slick-slider.dateSlider .slick-list .slick-track .slick-slide .MuiCard-root {
+  margin: 0 4px;
+}
+.slick-slider.dateSlider .slick-list .slick-track .slick-slide .MuiCard-root.MuiPaper-outlined.mr_selected {
+  background-color: #ffff7f;
+}
+.slick-slider.categorySlider .slick-list {
+  overflow: unset;
+  transform: translate3d(50px, 0, 0);
+}
+.slick-slider.categorySlider .slick-list .slick-track .slick-slide .category {
+  margin: 0 8px;
 }

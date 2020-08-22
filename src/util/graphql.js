@@ -29,7 +29,6 @@ export const FETCH_EVENT_QUERY = gql`
 				body
 			}
 			commentCount
-			
 		}
 	}
 `;

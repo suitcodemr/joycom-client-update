@@ -1,32 +1,39 @@
 import React from 'react';
 import { Card } from 'react-bootstrap';
-import { LinkContainer } from 'react-router-bootstrap';
 
-const CategoryCard = ({ category }) => {
+// Context
+import { useGlobalDispatchContext } from '../context/globalContext';
+
+const CategoryCard = ({ category, callbackCacheFCQ }) => {
+	const dispatch = useGlobalDispatchContext();
 	const { _id, name, eventCount } = category;
+
+	const setCurrentCategory = () => {
+		dispatch({ type: 'SET_CATEGORY', category });
+		callbackCacheFCQ();
+	};
 
 	return (
 		<>
-			<LinkContainer to={`/categoryPage/${_id}`}>
-				<Card className={`category bg-dark text-white category_${_id}`}>
-					<Card.Img
-						src={require(`../assets/img/categoryThumbnail_${_id}.jpg`)}
-					/>
-					<Card.ImgOverlay>
-						<Card.Title>{name}</Card.Title>
-						{eventCount < 1 ? (
-							<></>
-						) : (
-							<>
-								<div>
-									<div className='card-link counter'>Events: {eventCount}</div>
-									<div className='card-link arrow'></div>
-								</div>
-							</>
-						)}
-					</Card.ImgOverlay>
-				</Card>
-			</LinkContainer>
+			<Card
+				className={`category bg-dark text-white category_${_id}`}
+				onClick={setCurrentCategory}
+			>
+				<Card.Img src={require(`../assets/img/categoryThumbnail_${_id}.jpg`)} />
+				<Card.ImgOverlay>
+					<Card.Title>{name}</Card.Title>
+					{eventCount < 1 ? (
+						<></>
+					) : (
+						<>
+							<div>
+								<div className='card-link counter'>Events: {eventCount}</div>
+								<div className='card-link arrow'></div>
+							</div>
+						</>
+					)}
+				</Card.ImgOverlay>
+			</Card>
 		</>
 	);
 };

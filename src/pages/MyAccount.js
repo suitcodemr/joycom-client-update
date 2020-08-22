@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
 import moment from 'moment';
 import { useQuery } from '@apollo/react-hooks';
@@ -6,12 +6,15 @@ import gql from 'graphql-tag';
 import { Button, Container, Image } from 'react-bootstrap';
 import { Link, useHistory } from 'react-router-dom';
 
-const MyAccount = props => {
+import { AuthContext } from '../context/auth';
+
+const MyAccount = (props) => {
+	const { logout } = useContext(AuthContext);
 	const userId = props.match.params.userId;
 	let history = useHistory();
 
 	const { loading, data } = useQuery(GET_USER_QUERY, {
-		variables: { userId }
+		variables: { userId },
 	});
 
 	const pageBack = () => {
@@ -42,6 +45,13 @@ const MyAccount = props => {
 						<p>Registriert seit: {moment(createdAt).fromNow(true)}</p>
 					</div>
 				</div>
+				<Link
+					to='/'
+					onClick={logout}
+					className='category-button btn btn-primary'
+				>
+					Ausloggen
+				</Link>
 			</Container>
 		);
 	}

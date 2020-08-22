@@ -7,8 +7,9 @@ import de from 'date-fns/locale/de';
 
 import {
 	FETCH_CATEGORIES_QUERY,
-	FETCH_CATEGORY_EVENTS_QUERY
+	FETCH_CATEGORY_EVENTS_QUERY,
 } from '../util/graphql';
+
 import { useForm } from '../util/hooks';
 
 const EventForm = ({ categoryName, categoryId, callback }) => {
@@ -17,15 +18,14 @@ const EventForm = ({ categoryName, categoryId, callback }) => {
 
 	/**Datepicker**/
 	const [date, setDate] = useState(new Date());
-
 	registerLocale('de', de);
-	const handleChange = date => {
+	const handleChange = (date) => {
 		setDate(date);
 	};
 	/****/
 
 	const [selectOption, setSelectOption] = useState('');
-	const selectHandleChange = e => {
+	const selectHandleChange = (e) => {
 		setSelectOption(e.target.value);
 	};
 
@@ -36,7 +36,7 @@ const EventForm = ({ categoryName, categoryId, callback }) => {
 		duration: '',
 		body: '',
 		maxUsers: '',
-		category: ''
+		category: '',
 	};
 
 	const { data: dataFCQ } = useQuery(FETCH_CATEGORIES_QUERY);
@@ -50,7 +50,7 @@ const EventForm = ({ categoryName, categoryId, callback }) => {
 		...values,
 		time: date.toISOString(),
 		duration: selectOption,
-		category: selectCategory
+		category: selectCategory,
 	};
 
 	const [createEvent] = useMutation(CREATE_EVENT_MUTATION, {
@@ -60,7 +60,7 @@ const EventForm = ({ categoryName, categoryId, callback }) => {
 
 			const prevData = proxy.readQuery({
 				query: FETCH_CATEGORY_EVENTS_QUERY,
-				variables: { categoryId }
+				variables: { categoryId },
 			});
 			proxy.writeQuery({
 				query: FETCH_CATEGORY_EVENTS_QUERY,
@@ -68,22 +68,23 @@ const EventForm = ({ categoryName, categoryId, callback }) => {
 				data: {
 					getEventsCategory: [
 						result.data.createEvent,
-						...prevData.getEventsCategory
-					]
-				}
+						...prevData.getEventsCategory,
+					],
+				},
 			});
+
 			const prevData2 = proxy.readQuery({
-				query: FETCH_CATEGORIES_QUERY
+				query: FETCH_CATEGORIES_QUERY,
 			});
 			proxy.writeQuery({
 				query: FETCH_CATEGORIES_QUERY,
 				data: {
-					getCategories: prevData2.getCategories.forEach(category => {
+					getCategories: prevData2.getCategories.forEach((category) => {
 						if (category._id.toString() === categoryId) {
 							category.eventCount += 1;
 						}
-					})
-				}
+					}),
+				},
 			});
 
 			callback(eventNewId);
@@ -102,7 +103,7 @@ const EventForm = ({ categoryName, categoryId, callback }) => {
 		},
 		onError(err) {
 			setErrors(err.graphQLErrors[0].extensions.exception.errors);
-		}
+		},
 	});
 
 	function createEventCallback() {
@@ -218,7 +219,7 @@ const EventForm = ({ categoryName, categoryId, callback }) => {
 															inline
 															value={category.name}
 															checked={category.name === selectCategory}
-															onChange={e => setSelectCategory(category.name)}
+															onChange={(e) => setSelectCategory(category.name)}
 															name='category'
 															label={category.name}
 															type='radio'
@@ -255,7 +256,7 @@ const EventForm = ({ categoryName, categoryId, callback }) => {
 							</Form>
 							{Object.keys(errors).length > 0 && (
 								<ListGroup className='mt-2'>
-									{Object.values(errors).map(value => (
+									{Object.values(errors).map((value) => (
 										<ListGroup.Item key={value} variant='danger'>
 											{value}
 										</ListGroup.Item>

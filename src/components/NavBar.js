@@ -1,129 +1,73 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { Navbar, Nav, Dropdown, Container } from 'react-bootstrap';
+import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { BottomNavigation, BottomNavigationAction } from '@material-ui/core';
 import FavoriteIcon from '@material-ui/icons/Favorite';
-import RestoreIcon from '@material-ui/icons/Restore';
-import LocationOnIcon from '@material-ui/icons/LocationOn';
+import HomeIcon from '@material-ui/icons/Home';
+import SearchIcon from '@material-ui/icons/Search';
+import AddIcon from '@material-ui/icons/Add';
+import PersonIcon from '@material-ui/icons/Person';
+
+import {
+	StyledBottomNavigation,
+	StyledBottomNavigationAction,
+} from '../styles/navigationStyles';
+
 import { AuthContext } from '../context/auth';
 
 const NavBar = () => {
-	const [value, setValue] = useState('recents');
-	const { user, logout } = useContext(AuthContext);
-
-	const [dimensions, setDimensions] = useState({
-		height: window.innerHeight,
-		width: window.innerWidth,
-	});
-
-	useEffect(() => {
-		window.addEventListener('resize', handleResize);
-
-		function handleResize() {
-			setDimensions({
-				height: window.innerHeight,
-				width: window.innerWidth,
-			});
-			return (_) => {
-				window.removeEventListener('resize', handleResize);
-			};
-		}
-	}, [dimensions]);
+	const [navEle, setNavEle] = useState(2);
+	const { user } = useContext(AuthContext);
 
 	const menuBar = user ? (
-		<Navbar collapseOnSelect bg='primary' variant='dark' expand='lg'>
-			<Container>
-				<Link to='/'>
-					<Navbar.Brand>
-						<span className='icon-logo'></span>Joycom
-					</Navbar.Brand>
-				</Link>
-				{dimensions.width > 991 ? (
-					<Nav>
-						<Link
-							to={`/myAccount/${user._id}`}
-							className='myAccount nav-link'
-						>
-							Mein Profil<i className='icon-gear'></i>
-						</Link>
-						<Link to='/' className='myAccount nav-link' onClick={logout}>
-							Ausloggen<i className='icon-log-out'></i>
-						</Link>
-					</Nav>
-				) : (
-					<Dropdown className='user-dropdown' drop='left'>
-						<Dropdown.Toggle variant='primary' id='dropdown-basic'>
-							<i className='icon-user'></i>
-						</Dropdown.Toggle>
-						<Dropdown.Menu className='border-inverted'>
-							<Link
-								to={`/myAccount/${user._id}`}
-								className='nav-link myAccount dropdown-item'
-							>
-								Mein Profil<i className='icon-gear'></i>
-							</Link>
-
-							<Dropdown.Divider />
-
-							<Link
-								className='nav-link logout dropdown-item'
-								to='/'
-								onClick={logout}
-							>
-								Ausloggen
-								<i className='icon-log-out'></i>
-							</Link>
-						</Dropdown.Menu>
-					</Dropdown>
-				)}
-
-				<Navbar.Toggle aria-controls='basic-navbar-nav' />
-				<Navbar.Collapse id='basic-navbar-nav'>
-					<Nav className='ml-auto'>
-						<Link to='/aboutUs' className='aboutUs nav-link'>
-							Über uns
-						</Link>
-
-						<Link to='/idea' className='idea nav-link'>
-							Idee
-						</Link>
-					</Nav>
-				</Navbar.Collapse>
-			</Container>
-		</Navbar>
+		<StyledBottomNavigation
+			value={navEle}
+			onChange={(event, newValue) => {
+				setNavEle(newValue);
+			}}
+		>
+			<StyledBottomNavigationAction
+				component={Link}
+				to={`/myAccount/${user._id}`}
+				icon={<PersonIcon />}
+			/>
+			<StyledBottomNavigationAction icon={<SearchIcon />} />
+			<StyledBottomNavigationAction
+				component={Link}
+				to='/'
+				icon={<HomeIcon />}
+			/>
+			<StyledBottomNavigationAction
+				component={Link}
+				to='/addEvent'
+				icon={<AddIcon />}
+			/>
+			<StyledBottomNavigationAction icon={<FavoriteIcon />} />
+		</StyledBottomNavigation>
 	) : (
-		<Navbar collapseOnSelect bg='primary' variant='dark' expand='lg'>
-			<Container>
-				<Link to='/'>
-					<Navbar.Brand>
-						<span className='icon-logo'></span>Joycom
-					</Navbar.Brand>
-				</Link>
-				<Navbar.Toggle aria-controls='basic-navbar-nav' />
-				<Navbar.Collapse id='basic-navbar-nav'>
-					<Nav>
-						<Link to='/login' className='nav-link'>
-							Einloggen<i className='icon-key'></i>
-						</Link>
-						<Link to='/register' className='nav-link'>
-							Registrieren
-						</Link>
-					</Nav>
-				</Navbar.Collapse>
-			</Container>
-		</Navbar>
-		// <BottomNavigation
-		// 	value={value}
-		// 	onChange={(event, newValue) => {
-		// 		setValue(newValue);
-		// 	}}
-		// 	showLabels
-		// >
-		// 	<BottomNavigationAction label='Recent' icon={<RestoreIcon />} />
-		// 	<BottomNavigationAction label='Favorites' icon={<FavoriteIcon />} />
-		// 	<BottomNavigationAction label='Nearby' icon={<LocationOnIcon />} />
-		// </BottomNavigation>
+		<StyledBottomNavigation
+			value={navEle}
+			onChange={(event, newValue) => {
+				setNavEle(newValue);
+			}}
+		>
+			<StyledBottomNavigationAction
+				icon={<PersonIcon />}
+				component={Link}
+				to='/login'
+			/>
+			<StyledBottomNavigationAction icon={<SearchIcon />} />
+			<StyledBottomNavigationAction
+				component={Link}
+				to='/'
+				icon={<HomeIcon />}
+			/>
+			<StyledBottomNavigationAction
+				component={Link}
+				to='/login'
+				icon={<AddIcon />}
+			/>
+			<StyledBottomNavigationAction icon={<FavoriteIcon />} />
+		</StyledBottomNavigation>
 	);
 
 	return <>{menuBar}</>;

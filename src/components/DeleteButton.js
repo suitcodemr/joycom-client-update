@@ -6,7 +6,7 @@ import { Button, Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 import {
 	FETCH_CATEGORY_EVENTS_QUERY,
-	FETCH_CATEGORIES_QUERY
+	FETCH_CATEGORIES_QUERY,
 } from '../util/graphql';
 
 const DeleteButton = ({
@@ -14,7 +14,7 @@ const DeleteButton = ({
 	commentId,
 	category,
 	callback,
-	categoryId
+	categoryId,
 }) => {
 	const [show, setShow] = useState(false);
 
@@ -27,36 +27,36 @@ const DeleteButton = ({
 			if (!commentId && category) {
 				const data = proxy.readQuery({
 					query: FETCH_CATEGORY_EVENTS_QUERY,
-					variables: { categoryId }
+					variables: { categoryId },
 				});
 				proxy.writeQuery({
 					query: FETCH_CATEGORY_EVENTS_QUERY,
 					variables: { categoryId },
 					data: {
 						getEventsCategory: data.getEventsCategory.filter(
-							event => event._id.toString() !== eventId
-						)
-					}
+							(event) => event._id.toString() !== eventId
+						),
+					},
 				});
 
 				const prevData = proxy.readQuery({
-					query: FETCH_CATEGORIES_QUERY
+					query: FETCH_CATEGORIES_QUERY,
 				});
 				proxy.writeQuery({
 					query: FETCH_CATEGORIES_QUERY,
 					data: {
-						getCategories: prevData.getCategories.forEach(category => {
+						getCategories: prevData.getCategories.forEach((category) => {
 							if (category._id.toString() === categoryId) {
 								category.eventCount -= 1;
 							}
-						})
-					}
+						}),
+					},
 				});
 			}
 
 			if (callback) callback();
 		},
-		variables: { eventId, commentId }
+		variables: { eventId, commentId },
 	});
 
 	return (

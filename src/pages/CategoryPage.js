@@ -8,19 +8,19 @@ import {
 	Row,
 	Jumbotron,
 	Spinner,
-	Button
+	Button,
 } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 
 import { AuthContext } from '../context/auth';
 import {
 	FETCH_CATEGORY_EVENTS_QUERY,
-	FETCH_CATEGORIES_QUERY
+	FETCH_CATEGORIES_QUERY,
 } from '../util/graphql';
 import EventItem from '../components/EventItem';
 import EventForm from '../components/EventForm';
 
-const CategoryPage = props => {
+const CategoryPage = (props) => {
 	const categoryId = props.match.params.categoryId;
 	const [categoryName, setCategoryName] = useState('');
 	const [isEventCount, setIsEventCount] = useState(null);
@@ -30,7 +30,7 @@ const CategoryPage = props => {
 	const { data: dataFCEQ, loading: loadingFCEQ } = useQuery(
 		FETCH_CATEGORY_EVENTS_QUERY,
 		{
-			variables: { categoryId }
+			variables: { categoryId },
 		}
 	);
 
@@ -39,7 +39,7 @@ const CategoryPage = props => {
 	useEffect(() => {
 		if (dataFCQ) {
 			var currentCategory = dataFCQ.getCategories.filter(
-				category => category._id === categoryId
+				(category) => category._id === categoryId
 			);
 			setCategoryName(currentCategory[0].name);
 			currentCategory[0].eventCount === 0
@@ -52,7 +52,7 @@ const CategoryPage = props => {
 		history.go(-1);
 	};
 
-	const sendData = eventNewId => {
+	const sendData = (eventNewId) => {
 		history.push(`/singleEventPage/${eventNewId}`);
 	};
 
@@ -75,7 +75,7 @@ const CategoryPage = props => {
 						<Button className=' mt-3' onClick={() => pageBack()}>
 							<span className='icon-categories'></span> zu den Kategorien
 						</Button>
-						{user && (
+						{/* {user && (
 							<Accordion className='addEventAccordion'>
 								<Card>
 									<Accordion.Toggle
@@ -99,7 +99,7 @@ const CategoryPage = props => {
 									</Accordion.Collapse>
 								</Card>
 							</Accordion>
-						)}
+						)} */}
 					</div>
 
 					<Row>

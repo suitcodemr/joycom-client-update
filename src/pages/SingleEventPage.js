@@ -7,14 +7,14 @@ import {
 	Button,
 	Image,
 	OverlayTrigger,
-	Tooltip
+	Tooltip,
 } from 'react-bootstrap';
 import moment from 'moment';
 import 'moment/locale/de';
-import { useQuery, useMutation } from '@apollo/react-hooks';
+import { useQuery, useMutation, useApolloClient } from '@apollo/react-hooks';
 import { useHistory } from 'react-router-dom';
 
-import { FETCH_EVENT_QUERY, FETCH_CATEGORIES_QUERY } from '../util/graphql';
+import { FETCH_CATEGORIES_QUERY, FETCH_EVENT_QUERY } from '../util/graphql';
 import LikeButton from '../components/LikeButton';
 import DeleteButton from '../components/DeleteButton';
 import CommentButton from '../components/CommentButton';
@@ -22,39 +22,26 @@ import Comments from '../components/Comments';
 
 import { AuthContext } from '../context/auth';
 
-const SingleEventPage = props => {
+// Context
+import { useGlobalStateContext } from '../context/globalContext';
+
+const SingleEventPage = (props) => {
 	const { user } = useContext(AuthContext);
-	const [categoryId, setCategoryId] = useState('');
+	const eventId = props.match.params.eventId;
+	const { selectedCategory } = useGlobalStateContext();
 	let history = useHistory();
 
-	const eventId = props.match.params.eventId;
 	const { data: dataFEQ, loading: loadingFEQ } = useQuery(FETCH_EVENT_QUERY, {
-		variables: { eventId }
+		variables: { eventId },
 	});
 
-	const { data: dataFCQ } = useQuery(FETCH_CATEGORIES_QUERY);
-
-	useEffect(() => {
-		if (!loadingFEQ) {
-			if (dataFCQ) {
-				var getCategoryId = dataFCQ.getCategories.forEach(category => {
-					if (category.name === dataFEQ.getEvent.category) {
-						console.log(category._id);
-						setCategoryId(category._id);
-					}
-				});
-			}
-		}
-	}, [dataFCQ, dataFEQ, loadingFEQ]);
-
 	const [addUser] = useMutation(ADD_USER_MUTATION, {
-		variables: { eventId }
+		variables: { eventId },
 	});
 
 	const pageBack = () => {
 		history.go(-1);
 	};
-
 	function deleteEventCallback() {
 		history.go(-2);
 	}
@@ -101,7 +88,7 @@ const SingleEventPage = props => {
 			likes,
 			likeCount,
 			comments,
-			commentCount
+			commentCount,
 		} = dataFEQ.getEvent;
 
 		var eventMarkup = (
@@ -181,11 +168,11 @@ const SingleEventPage = props => {
 										eventId={_id}
 										callback={deleteEventCallback}
 										category={category}
-										categoryId={categoryId}
+										categoryId={selectedCategory._id}
 									/>
 								) : user ? (
 									userList.find(
-										userItem => userItem.username === user.username
+										(userItem) => userItem.username === user.username
 									) ? (
 										//cross Button
 										<OverlayTrigger
