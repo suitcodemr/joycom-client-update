@@ -13,7 +13,7 @@ export const FETCH_EVENT_QUERY = gql`
 			userList {
 				_id
 				username
-				avatar
+				
 			}
 			maxUsers
 			category
@@ -70,7 +70,7 @@ export const FETCH_CATEGORY_EVENTS_QUERY = gql`
 			userList {
 				_id
 				username
-				avatar
+				
 			}
 			likes {
 				username

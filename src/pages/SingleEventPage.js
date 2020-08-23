@@ -1,20 +1,19 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import gql from 'graphql-tag';
 import {
 	Card,
 	Container,
 	Button,
-	Image,
 	OverlayTrigger,
 	Tooltip,
 } from 'react-bootstrap';
 import moment from 'moment';
 import 'moment/locale/de';
-import { useQuery, useMutation, useApolloClient } from '@apollo/react-hooks';
+import { useQuery, useMutation } from '@apollo/react-hooks';
 import { useHistory } from 'react-router-dom';
 
-import { FETCH_CATEGORIES_QUERY, FETCH_EVENT_QUERY } from '../util/graphql';
+import { FETCH_EVENT_QUERY } from '../util/graphql';
 import LikeButton from '../components/LikeButton';
 import DeleteButton from '../components/DeleteButton';
 import CommentButton from '../components/CommentButton';
@@ -31,7 +30,7 @@ const SingleEventPage = (props) => {
 	const { selectedCategory } = useGlobalStateContext();
 	let history = useHistory();
 
-	const { data: dataFEQ, loading: loadingFEQ } = useQuery(FETCH_EVENT_QUERY, {
+	const { data: dataFEQ } = useQuery(FETCH_EVENT_QUERY, {
 		variables: { eventId },
 	});
 
@@ -141,25 +140,7 @@ const SingleEventPage = (props) => {
 										{maxUsers - userCount === 0 ? '0' : maxUsers - userCount}
 									</p>
 								</div>
-								<div className='userList'>
-									<p>Teilnehmer:</p>
-
-									{userList.map((userListItem, index) => (
-										<OverlayTrigger
-											key={index}
-											placement='bottom'
-											overlay={
-												<Tooltip id='tooltip-disabled'>
-													{userListItem.username}
-												</Tooltip>
-											}
-										>
-											<Image
-												src={require(`../assets/img/avatar-${userListItem.avatar}.png`)}
-											/>
-										</OverlayTrigger>
-									))}
-								</div>
+								
 							</Card.Body>
 							<Card.Body className='card-action'>
 								<p className='creator'>erstellt von {creator}</p>
